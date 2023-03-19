@@ -1,6 +1,7 @@
 package com.example.demo.web;
 
 import com.example.demo.domain.member.Member;
+import com.example.demo.web.argumentresolver.Login;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -15,7 +16,7 @@ import javax.servlet.http.HttpSession;
 @Controller
 @RequiredArgsConstructor
 public class HomeController {
-//    @GetMapping("/")
+    //    @GetMapping("/")
     public String HomeLoginV3(HttpServletRequest request, Model model) {
 
         HttpSession session = request.getSession(false);
@@ -34,9 +35,21 @@ public class HomeController {
         return "loginHome";
     }
 
-    @GetMapping("/")
+    //    @GetMapping("/")
     public String HomeLoginV3Spring(
             @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember, Model model) {
+
+        //세션에 회원 데이터가 없으면 home
+        if (loginMember == null) {
+            return "home";
+        }
+
+        model.addAttribute("member", loginMember);
+        return "loginHome";
+    }
+
+    @GetMapping("/")
+    public String HomeLoginV3ArgumentResolver(@Login Member loginMember, Model model) {
 
         //세션에 회원 데이터가 없으면 home
         if (loginMember == null) {
